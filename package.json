@@ -1,6 +1,6 @@
 {
-  "name": "workspace",
-  "version": "0.0.0",
+  "name": "cast-response",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -24,6 +24,7 @@
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
+    "@angular-devkit/build-angular": "^14.2.1",
     "@angular-eslint/builder": "14.0.3",
     "@angular-eslint/eslint-plugin": "14.0.3",
     "@angular-eslint/eslint-plugin-template": "14.0.3",
@@ -34,7 +35,7 @@
     "@types/jasmine": "~4.0.0",
     "@typescript-eslint/eslint-plugin": "5.29.0",
     "@typescript-eslint/parser": "5.29.0",
-    "eslint": "^8.18.0",
+    "eslint": "8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jasmine-core": "~4.3.0",
@@ -43,6 +44,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
+    "ng-packagr": "^14.2.0",
     "prettier": "^2.7.1",
     "prettier-eslint": "^15.0.1",
     "typescript": "~4.7.2"
