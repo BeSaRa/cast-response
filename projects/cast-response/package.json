@@ -1,5 +1,5 @@
 {
-  "name": "cast-response",
+  "name": "cast-res",
   "version": "1.0.0",
   "peerDependencies": {
     "@angular/common": "^14.0.0",
