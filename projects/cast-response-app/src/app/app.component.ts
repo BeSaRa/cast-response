@@ -12,8 +12,6 @@ export class AppComponent implements OnInit {
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
-    this.postService.load().subscribe((posts) => {
-      console.log(posts);
-    });
+    this.postService.load().subscribe();
   }
 }

@@ -1,6 +1,7 @@
-import { GeneralInterceptorContract } from './contracts/general-interceptor-contract';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { GeneralInterceptor } from './general-interceptor';
+import { ClassConstructor } from './types/constructors';
+import { GeneralInterceptorContract } from './contracts/general-interceptor-contract';
 
 @NgModule({
   declarations: [],
@@ -9,11 +10,11 @@ import { GeneralInterceptor } from './general-interceptor';
 })
 export class CastResponseModule {
   static forRoot(
-    interceptors: GeneralInterceptorContract[]
+    interceptors: ClassConstructor<GeneralInterceptorContract>[]
   ): ModuleWithProviders<CastResponseModule> {
-    GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat([
-      interceptors,
-    ]);
+    GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat(
+      interceptors.map((i) => new i())
+    );
     return {
       ngModule: CastResponseModule,
       providers: [],
@@ -21,11 +22,11 @@ export class CastResponseModule {
   }
 
   static forChild(
-    interceptors: GeneralInterceptorContract[]
+    interceptors: ClassConstructor<GeneralInterceptorContract>[]
   ): ModuleWithProviders<CastResponseModule> {
-    GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat([
-      interceptors,
-    ]);
+    GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat(
+      interceptors.map((i) => new i())
+    );
     return {
       ngModule: CastResponseModule,
       providers: [],
