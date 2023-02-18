@@ -193,9 +193,11 @@ export function CastResponse(
             models.hasOwnProperty(unwrapProperty)
               ? models[unwrapProperty]
               : models;
-          return Array.isArray(models)
-            ? caseCollection(callback, models, options, this, propertyKey)
-            : castModel(callback, models, options, this, propertyKey);
+          return models
+            ? Array.isArray(models)
+              ? caseCollection(callback, models, options, this, propertyKey)
+              : castModel(callback, models, options, this, propertyKey)
+            : models;
         })
       );
     } as unknown as T;
