@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "version:patch": "npm version patch && cd projects/cast-response/ npm version patch",
+    "version:minor": "npm version minor && cd projects/cast-response/ npm version minor",
+    "version:major": "npm version major && cd projects/cast-response/ npm version major"
   },
   "private": false,
   "dependencies": {
