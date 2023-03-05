@@ -168,13 +168,9 @@ export function CastResponse(
         string | symbol,
         CastOptionContract
       >;
-      let hasUnwrap: boolean;
+      let hasUnwrap: boolean = false;
       let unwrapProperty = '';
-
-      if (options.unwrap) {
-        hasUnwrap = true;
-        unwrapProperty = options.unwrap;
-      }
+      let unwrapProperties: string[] = [];
 
       if (
         containerMap &&
@@ -185,13 +181,36 @@ export function CastResponse(
         unwrapProperty = containerMap.get(propertyKey)!.unwrap!;
       }
 
+      if (options.unwrap) {
+        hasUnwrap = true;
+        unwrapProperty = options.unwrap;
+      }
+
+      if (hasUnwrap) {
+        unwrapProperties = unwrapProperty.split('.');
+      }
+
+      /*
+      {
+      error: '',
+      message: '',
+      result: {
+          records: {} | []
+        }
+      }
+      * */
+
       return original.apply(this, args).pipe(
         map((models) => {
           models =
-            isObject(models) &&
-            hasUnwrap &&
-            models.hasOwnProperty(unwrapProperty)
-              ? models[unwrapProperty]
+            isObject(models) && hasUnwrap
+              ? ((length) => {
+                  length > 1
+                    ? unwrapProperties.reduce((acc, property, index) => {
+                        return index == 0 ? models[property] : acc[property];
+                      }, {} as Record<string, any>)
+                    : models[unwrapProperty];
+                })(unwrapProperties.length)
               : models;
           return models
             ? Array.isArray(models)
