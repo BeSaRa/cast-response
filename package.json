@@ -1,10 +1,10 @@
 {
   "name": "cast-response",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build cast-response",
     "watch": "ng build cast-response --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint",
