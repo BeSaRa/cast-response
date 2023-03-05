@@ -1,7 +1,7 @@
 import { ClassConstructor } from '../types/constructors';
 
 export interface CastResponseContract {
-  fallback: string;
+  fallback?: string;
   unwrap?: string;
   shape?: Record<string, () => ClassConstructor<any>>;
 }

@@ -144,8 +144,9 @@ function caseCollection(
   );
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function CastResponse(
-  callback: undefined | string | (() => ClassConstructor<any>),
+  callback?: undefined | string | (() => ClassConstructor<any>),
   options: CastResponseContract = {
     fallback: '$default',
     unwrap: 'rs',
@@ -171,7 +172,6 @@ export function CastResponse(
       let hasUnwrap: boolean = false;
       let unwrapProperty = '';
       let unwrapProperties: string[] = [];
-
       if (
         containerMap &&
         containerMap.has(propertyKey) &&
@@ -189,27 +189,20 @@ export function CastResponse(
       if (hasUnwrap) {
         unwrapProperties = unwrapProperty.split('.');
       }
-
-      /*
-      {
-      error: '',
-      message: '',
-      result: {
-          records: {} | []
-        }
-      }
-      * */
-
       return original.apply(this, args).pipe(
         map((models) => {
           models =
             isObject(models) && hasUnwrap
               ? ((length) => {
-                  length > 1
+                  return length > 1
                     ? unwrapProperties.reduce((acc, property, index) => {
                         return index == 0 ? models[property] : acc[property];
                       }, {} as Record<string, any>)
-                    : models[unwrapProperty];
+                    : (() => {
+                        return models.hasOwnProperty(unwrapProperty)
+                          ? models[unwrapProperty]
+                          : models;
+                      })();
                 })(unwrapProperties.length)
               : models;
           return models
@@ -224,6 +217,7 @@ export function CastResponse(
   };
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function CastResponseContainer(
   options: Record<string, CastOptionContract>
 ): ClassDecorator {
