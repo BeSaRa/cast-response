@@ -152,7 +152,7 @@ export function CastResponse(
     unwrap: 'rs',
   }
 ): MethodDecorator {
-  return <T extends Object>(
+  return <T>(
     target: any,
     propertyKey: string | symbol,
     descriptor: TypedPropertyDescriptor<T>

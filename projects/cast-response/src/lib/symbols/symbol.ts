@@ -5,7 +5,7 @@ export const $$_PARAMS_INTERCEPTORS = Symbol('$$_PARAMS_INTERCEPTORS');
 export const $$_INTERCEPT_CONTAINER = Symbol('$$_INTERCEPT_CONTAINER');
 
 export type InterceptMap = Map<
-  string | symbol,
+  string | symbol | undefined,
   Record<number, (model: any) => any>
 >;
 
