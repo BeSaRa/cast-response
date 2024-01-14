@@ -1,13 +1,22 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+import { AppComponent, GInterceptor } from './app/app.component';
+import {
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
+import { provideInterceptors } from 'cast-response';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
-  .bootstrapModule(AppModule)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(BrowserModule),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideInterceptors([GInterceptor]),
+  ],
+}).catch((err) => console.error(err));
