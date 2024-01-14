@@ -13,7 +13,7 @@ export class CastResponseModule {
     interceptors: ClassConstructor<GeneralInterceptorContract>[]
   ): ModuleWithProviders<CastResponseModule> {
     GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat(
-      interceptors.map((i) => new i())
+      interceptors.map((interceptor) => new interceptor())
     );
     return {
       ngModule: CastResponseModule,
@@ -25,7 +25,7 @@ export class CastResponseModule {
     interceptors: ClassConstructor<GeneralInterceptorContract>[]
   ): ModuleWithProviders<CastResponseModule> {
     GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat(
-      interceptors.map((i) => new i())
+      interceptors.map((interceptor) => new interceptor())
     );
     return {
       ngModule: CastResponseModule,
@@ -33,3 +33,12 @@ export class CastResponseModule {
     };
   }
 }
+
+// export function provideInterceptors(
+//   interceptors: ClassConstructor<GeneralInterceptorContract>[]
+// ) {
+//   GeneralInterceptor.interceptors = GeneralInterceptor.interceptors.concat(
+//     interceptors.map((interceptor) => new interceptor())
+//   );
+//   return;
+// }

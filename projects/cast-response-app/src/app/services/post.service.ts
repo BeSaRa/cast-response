@@ -1,15 +1,12 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Post } from '../models/post';
-import { CastResponse, CastResponseContainer } from 'cast-response';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Post} from '../models/post';
 
-@CastResponseContainer({
-  $default: {
-    model: () => Post,
-    unwrap: 'address',
-  },
-})
+// @ts-ignore
+import {CastResponse, CastResponseContainer} from 'cast-response';
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -21,5 +18,22 @@ export class PostService {
   @CastResponse()
   load(): Observable<Post[]> {
     return this.http.get<Post[]>(this.URL);
+  }
+
+  @CastResponse(() => Post)
+  loadAPP(): Observable<any> {
+    return this.http.post(
+      'http://eblaepm.no-ip.org:7800/mme-services/kpi/rent/default',
+      {
+        municipalityId: 1,
+        propertyTypeList: [-1],
+        rentPurposeList: [-1],
+      },
+      {
+        headers: {
+          Authorization: 'Bearer 9856898698989'
+        }
+      }
+    );
   }
 }

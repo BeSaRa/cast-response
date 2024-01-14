@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
-    this.postService.load().subscribe((value) => {
+    this.postService.loadAPP().subscribe((value) => {
       console.log(value);
     });
   }

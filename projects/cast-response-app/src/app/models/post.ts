@@ -1,3 +1,4 @@
+// @ts-ignore
 import { InterceptModel, InterceptorContract } from 'cast-response';
 
 class Inter implements InterceptorContract<Post> {
