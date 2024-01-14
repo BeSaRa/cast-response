@@ -9,8 +9,6 @@ import { GeneralInterceptorContract } from 'cast-response';
   standalone: true,
 })
 export class AppComponent implements OnInit {
-  title = 'cast-response-app';
-
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {

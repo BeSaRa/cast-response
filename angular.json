@@ -51,12 +51,14 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-devkit/build-angular:application",
           "options": {
+            "browser": "projects/cast-response-app/src/main.ts",
             "outputPath": "dist/cast-response-app",
             "index": "projects/cast-response-app/src/index.html",
-            "main": "projects/cast-response-app/src/main.ts",
-            "polyfills": "projects/cast-response-app/src/polyfills.ts",
+            "polyfills": [
+              "zone.js"
+            ],
             "tsConfig": "projects/cast-response-app/tsconfig.app.json",
             "assets": [
               "projects/cast-response-app/src/favicon.ico",
@@ -65,7 +67,9 @@
             "styles": [
               "projects/cast-response-app/src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "prerender": false,
+            "ssr": false
           },
           "configurations": {
             "production": {
@@ -81,18 +85,10 @@
                   "maximumError": "4kb"
                 }
               ],
-              "fileReplacements": [
-                {
-                  "replace": "projects/cast-response-app/src/environments/environment.ts",
-                  "with": "projects/cast-response-app/src/environments/environment.prod.ts"
-                }
-              ],
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
               "optimization": false,
-              "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
@@ -122,7 +118,10 @@
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "projects/cast-response-app/src/test.ts",
-            "polyfills": "projects/cast-response-app/src/polyfills.ts",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
             "tsConfig": "projects/cast-response-app/tsconfig.spec.json",
             "karmaConfig": "projects/cast-response-app/karma.conf.js",
             "assets": [
