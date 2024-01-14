@@ -104,10 +104,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "cast-response-app:build:production"
+              "buildTarget": "cast-response-app:build:production"
             },
             "development": {
-              "browserTarget": "cast-response-app:build:development"
+              "buildTarget": "cast-response-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -115,7 +115,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "cast-response-app:build"
+            "buildTarget": "cast-response-app:build"
           }
         },
         "test": {
