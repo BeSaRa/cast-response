@@ -15,5 +15,12 @@ export class PostService {
   @CastResponse(() => Post)
   load(): Observable<Post[]> {
     return this.http.get<Post[]>(this.URL);
+    // return of({
+    //   address: {
+    //     0: { x: true },
+    //     10: { x: true },
+    //     12: { x: true },
+    //   },
+    // } as unknown as Post[]);
   }
 }

@@ -38,12 +38,27 @@ function castProperty(
     model[property] = castProperty(model[property], castTo, shapeArray.slice());
   }
 
-  if (property && model[property] && !shapeArray.length) {
+  if (
+    property &&
+    (model[property] || property === '{}') &&
+    !shapeArray.length
+  ) {
     const BluePrint = castTo();
     const interceptor = getReceiveInterceptor(BluePrint);
-    model[property] = interceptor(
-      Object.assign(new BluePrint(), model[property])
-    );
+
+    if (property === '{}') {
+      const objectKeys = Object.keys(model);
+      objectKeys.forEach((key) => {
+        isObject(model[key]) &&
+          (model[key] = interceptor(
+            Object.assign(new BluePrint(), model[key])
+          ));
+      });
+    } else {
+      model[property] = interceptor(
+        Object.assign(new BluePrint(), model[property])
+      );
+    }
   }
 
   if (
@@ -122,7 +137,6 @@ function castModel(
       break;
   }
   model = options.shape ? castShape(model, options.shape) : model;
-
   const interceptor = getReceiveInterceptor(BluePrint);
 
   return interceptor(
@@ -132,7 +146,7 @@ function castModel(
   );
 }
 
-function caseCollection(
+function castCollection(
   callback: undefined | string | (() => ClassConstructor<any>),
   models: any[],
   options: CastResponseContract,
@@ -207,7 +221,7 @@ export function CastResponse(
               : models;
           return models
             ? Array.isArray(models)
-              ? caseCollection(callback, models, options, this, propertyKey)
+              ? castCollection(callback, models, options, this, propertyKey)
               : castModel(callback, models, options, this, propertyKey)
             : models;
         })
