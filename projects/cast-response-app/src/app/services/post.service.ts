@@ -15,12 +15,18 @@ export class PostService {
   @CastResponse(() => Post)
   load(): Observable<Post[]> {
     return this.http.get<Post[]>(this.URL);
-    // return of({
-    //   address: {
-    //     0: { x: true },
-    //     10: { x: true },
-    //     12: { x: true },
-    //   },
-    // } as unknown as Post[]);
+  }
+
+  @CastResponse(() => Post)
+  loadPromise(): Promise<Post[]> {
+    return Promise.resolve([{ id: 1 }, { id: 2 }] as unknown as Post[]);
+  }
+
+  @CastResponse(() => Post)
+  loadMethod(): Post[] {
+    return [
+      { id: 1, body: 'content', title: 'title', userId: 1 },
+      { id: 2, body: 'content', title: 'title', userId: 2 },
+    ];
   }
 }

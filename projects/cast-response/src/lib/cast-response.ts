@@ -7,8 +7,9 @@ import {
 } from './symbols/symbol';
 import { GeneralInterceptor } from './general-interceptor';
 import { isObject } from './helpers/is-object';
-import { identity, map, Observable } from 'rxjs';
+import { identity, isObservable, map, Observable } from 'rxjs';
 import { CastOptionContract } from './contracts/cast-option-contract';
+import { isPromise } from 'rxjs/internal/util/isPromise';
 
 function getFilteredProperty(property: string) {
   return property.split('.').filter((item) => item !== '.');
@@ -179,7 +180,8 @@ export function CastResponse(
 
     const original = descriptor.value! as unknown as () => Observable<any>;
     descriptor.value = function (this: any, ...args: []): Observable<any> {
-      const containerMap = this[$$_CAST_RESPONSE_CONTAINER] as Map<
+      const instance = this;
+      const containerMap = instance[$$_CAST_RESPONSE_CONTAINER] as Map<
         string | symbol,
         CastOptionContract
       >;
@@ -203,32 +205,60 @@ export function CastResponse(
       if (hasUnwrap) {
         unwrapProperties = unwrapProperty.split('.');
       }
-      return original.apply(this, args).pipe(
-        map((models) => {
-          models =
-            isObject(models) && hasUnwrap
-              ? ((length) => {
-                  return length > 1
-                    ? unwrapProperties.reduce((acc, property, index) => {
-                        return index == 0 ? models[property] : acc[property];
-                      }, {} as Record<string, any>)
-                    : (() => {
-                        return models.hasOwnProperty(unwrapProperty)
-                          ? models[unwrapProperty]
-                          : models;
-                      })();
-                })(unwrapProperties.length)
-              : models;
-          return models
-            ? Array.isArray(models)
-              ? castCollection(callback, models, options, this, propertyKey)
-              : castModel(callback, models, options, this, propertyKey)
-            : models;
-        })
-      );
+      const result = original.apply(instance, args);
+
+      function runApplyCasting(models: any) {
+        return applyCasting(
+          models,
+          hasUnwrap,
+          unwrapProperties,
+          unwrapProperty,
+          instance,
+          callback,
+          propertyKey,
+          options
+        );
+      }
+
+      return isObservable(result)
+        ? result.pipe(map((models) => runApplyCasting(models)))
+        : isPromise(result)
+        ? result.then((models) => runApplyCasting(models))
+        : runApplyCasting(result);
     } as unknown as T;
     return descriptor;
   };
+}
+
+function applyCasting(
+  models: any,
+  hasUnwrap: boolean,
+  unwrapProperties: string[],
+  unwrapProperty: string,
+  instance: any,
+  callback: undefined | string | (() => ClassConstructor<any>),
+  propertyKey: string | symbol,
+  options: CastResponseContract
+) {
+  models =
+    isObject(models) && hasUnwrap
+      ? ((length) => {
+          return length > 1
+            ? unwrapProperties.reduce((acc, property, index) => {
+                return index == 0 ? models[property] : acc[property];
+              }, {} as Record<string, any>)
+            : (() => {
+                return models.hasOwnProperty(unwrapProperty)
+                  ? models[unwrapProperty]
+                  : models;
+              })();
+        })(unwrapProperties.length)
+      : models;
+  return models
+    ? Array.isArray(models)
+      ? castCollection(callback, models, options, instance, propertyKey)
+      : castModel(callback, models, options, instance, propertyKey)
+    : models;
 }
 
 // noinspection JSUnusedGlobalSymbols

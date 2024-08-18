@@ -12,8 +12,15 @@ export class AppComponent implements OnInit {
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
+    const value = this.postService.loadMethod();
+    console.log('method', value);
+
+    this.postService.loadPromise().then((value) => {
+      console.log('Promise', value);
+    });
+
     this.postService.load().subscribe((value) => {
-      console.log(value);
+      console.log('Observable', value);
     });
   }
 }
