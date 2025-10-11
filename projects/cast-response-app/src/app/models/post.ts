@@ -1,5 +1,6 @@
 // @ts-ignore
 import { InterceptModel, InterceptorContract } from 'cast-response';
+import { ReceiveInterceptorFn } from 'cast-response';
 
 class Inter implements InterceptorContract<Post> {
   send(_model: Partial<Post>): Partial<Post> {
@@ -11,10 +12,14 @@ class Inter implements InterceptorContract<Post> {
     return model;
   }
 }
-
-const { send, receive } = new Inter();
-
-@InterceptModel({ send, receive })
+const receive: ReceiveInterceptorFn<Post> = (model) => {
+  console.log('Receive From Function', model);
+  return model;
+};
+@InterceptModel({
+  send: new Inter().send,
+  receive: receive,
+})
 export class Post {
   userId!: number;
   id!: number;

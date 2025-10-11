@@ -12,4 +12,4 @@ export * from './lib/types/constructors';
 export * from './lib/types/model-interceptors-functions';
 export * from './lib/cast-response';
 export * from './lib/intercept-model';
-export * from './lib/provide.interceptors';
+export * from './lib/provide-model-interceptors';
