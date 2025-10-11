@@ -9,6 +9,7 @@ export * from './lib/contracts/cast-response-contract';
 export * from './lib/helpers/is-object';
 export * from './lib/symbols/symbol';
 export * from './lib/types/constructors';
+export * from './lib/types/model-interceptors-functions';
 export * from './lib/cast-response';
 export * from './lib/intercept-model';
 export * from './lib/provide.interceptors';
