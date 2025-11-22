@@ -38,7 +38,7 @@ function castProperty(
   if (property && model[property] && shapeArray.length) {
     model[property] = castProperty(model[property], castTo, shapeArray.slice());
   }
-
+  // if it is the last property, and it is not an array
   if (
     property &&
     (model[property] || property === '{}') &&
@@ -60,6 +60,13 @@ function castProperty(
         Object.assign(new BluePrint(), model[property])
       );
     }
+  }
+
+  if (property && !model[property] && property === '{}' && shapeArray.length) {
+    const objectKeys = Object.keys(model);
+    objectKeys.forEach((key) => {
+      model[key] = castProperty(model[key], castTo, shapeArray.slice());
+    });
   }
 
   if (
@@ -188,6 +195,7 @@ export function CastResponse(
       let hasUnwrap: boolean = false;
       let unwrapProperty = '';
       let unwrapProperties: string[] = [];
+      // check the container first if it has unwrap property
       if (
         containerMap &&
         containerMap.has(propertyKey) &&
@@ -196,12 +204,13 @@ export function CastResponse(
         hasUnwrap = true;
         unwrapProperty = containerMap.get(propertyKey)!.unwrap!;
       }
-
+      // override hasUnwrap if the CastResponse itself has unwrap options,
+      // this is useful when you have multiple CastResponse with different unwrap options
       if (options.unwrap) {
         hasUnwrap = true;
         unwrapProperty = options.unwrap;
       }
-
+      // create array from unwrap property to use it later while reaching the model
       if (hasUnwrap) {
         unwrapProperties = unwrapProperty.split('.');
       }
@@ -254,6 +263,7 @@ function applyCasting(
               })();
         })(unwrapProperties.length)
       : models;
+  /* check if the models is an array or not to use the correct casting function*/
   return models
     ? Array.isArray(models)
       ? castCollection(callback, models, options, instance, propertyKey)
