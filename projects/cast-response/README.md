@@ -370,7 +370,7 @@ interface User {
 
 // No methods, no business logic
 ```
-#### Before (Plain Interfaces)
+#### After (Real Classes)
 ```typescript
 class User {
   id!: number;
