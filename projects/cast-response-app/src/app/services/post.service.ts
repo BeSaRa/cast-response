@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Post } from '../models/post';
 
 import { CastResponse } from 'cast-response';
@@ -28,5 +28,29 @@ export class PostService {
       { id: 1, body: 'content', title: 'title', userId: 1 },
       { id: 2, body: 'content', title: 'title', userId: 2 },
     ];
+  }
+
+  @CastResponse(() => Post, {
+    shape: {
+      '{}': () => Post,
+    },
+  })
+  loadAndCastObject(): Observable<{ first: Post; second: Post }> {
+    return of({
+      first: { id: 1, body: 'content', title: 'title', userId: 1 },
+      second: { id: 1, body: 'content', title: 'title', userId: 1 },
+    });
+  }
+
+  @CastResponse(undefined, {
+    shape: {
+      '{}.*': () => Post,
+    },
+  })
+  loadAndCastObjectWithArray(): Observable<{ first: Post[]; second: Post[] }> {
+    return of({
+      first: [{ id: 1, body: 'content', title: 'title', userId: 1 }],
+      second: [{ id: 1, body: 'content', title: 'title', userId: 1 }],
+    });
   }
 }

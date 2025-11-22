@@ -22,6 +22,14 @@ export class AppComponent implements OnInit {
     this.postService.load().subscribe((value) => {
       console.log('Observable', value);
     });
+
+    this.postService.loadAndCastObject().subscribe((value) => {
+      console.log('Observable shape Object', value);
+    });
+
+    this.postService.loadAndCastObjectWithArray().subscribe((value) => {
+      console.log('Observable shape Object With Array', value);
+    });
   }
 }
 
