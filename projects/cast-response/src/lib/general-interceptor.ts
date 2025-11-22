@@ -1,5 +1,7 @@
 import { GeneralInterceptorContract } from './contracts/general-interceptor-contract';
-
+/**
+ * @internal
+ */
 export class GeneralInterceptor {
   static interceptors: GeneralInterceptorContract[] = [];
 

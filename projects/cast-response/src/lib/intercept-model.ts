@@ -9,6 +9,13 @@ import { identity } from 'rxjs';
 import { GeneralInterceptor } from './general-interceptor';
 import { isObject } from './helpers/is-object';
 
+/**
+ * Decorator that adds model interception capabilities to a class.
+ * @param options Configuration object for model interception
+ * @param options.send Optional function to transform model before sending
+ * @param options.receive Optional function to transform model after receiving
+ * @returns Class decorator function
+ */
 export function InterceptModel(options: {
   send?: (model: any) => any;
   receive?: (model: any) => any;
@@ -19,6 +26,11 @@ export function InterceptModel(options: {
   };
 }
 
+/**
+ * Decorator that marks a class as an interception container and configures interception options.
+ * @param options Optional configuration object containing interception mappings
+ * @returns Class decorator function
+ */
 export function InterceptionContainer(
   options?: interceptContainerOptions
 ): ClassDecorator {
@@ -38,6 +50,14 @@ export function InterceptionContainer(
   };
 }
 
+/**
+ * Helper function to determine the appropriate send interceptor for a model.
+ * @param model The model to be intercepted
+ * @param index The parameter index
+ * @param interceptor Optional explicit interceptor function
+ * @param backupInterceptors Optional fallback interceptors
+ * @returns Function that will intercept the model
+ */
 function getSendInterceptor(
   model: any,
   index: number,
@@ -58,10 +78,20 @@ function getSendInterceptor(
     : identity;
 }
 
+/**
+ * Creates a deep clone of an array model.
+ * @param model Array to be cloned
+ * @returns Cloned array
+ */
 function cloneArrayModel(model: any[]): any[] {
   return model.map((item) => cloneModel(item));
 }
 
+/**
+ * Creates a deep clone of a model.
+ * @param model Model to be cloned
+ * @returns Cloned model
+ */
 function cloneModel(model: any): any {
   return Array.isArray(model)
     ? cloneArrayModel(model)
@@ -70,6 +100,13 @@ function cloneModel(model: any): any {
     : model;
 }
 
+/**
+ * Method decorator that enables interception for method parameters.
+ * @param target The prototype of the class
+ * @param propertyKey The name of the method
+ * @param descriptor The property descriptor
+ * @returns Modified property descriptor
+ */
 export function HasInterception<T>(
   target: any,
   propertyKey: string | symbol,
@@ -109,6 +146,11 @@ export function HasInterception<T>(
   return descriptor;
 }
 
+/**
+ * Parameter decorator that configures interception for a specific parameter.
+ * @param interceptor Optional function to intercept the parameter
+ * @returns Parameter decorator function
+ */
 export function InterceptParam(
   interceptor?: (model: any) => any
 ): ParameterDecorator {

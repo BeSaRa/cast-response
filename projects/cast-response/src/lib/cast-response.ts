@@ -11,10 +11,24 @@ import { identity, isObservable, map, Observable } from 'rxjs';
 import { CastOptionContract } from './contracts/cast-option-contract';
 import { isPromise } from 'rxjs/internal/util/isPromise';
 
+/**
+ * @internal
+ * Splits a property string by dots and filters out any empty segments
+ * @param property The property string to filter
+ * @returns Array of property segments
+ */
 function getFilteredProperty(property: string) {
   return property.split('.').filter((item) => item !== '.');
 }
 
+/**
+ * @internal
+ * Recursively casts properties of a model according to the shape array
+ * @param model The model object to cast
+ * @param castTo Function that returns the constructor to cast to
+ * @param shapeArray Array of property paths to cast
+ * @returns The cast model
+ */
 function castProperty(
   model: any,
   castTo: () => ClassConstructor<any>,
@@ -82,6 +96,12 @@ function castProperty(
   return model;
 }
 
+/**
+ * @internal
+ * Gets the receive interceptor function from a blueprint class
+ * @param BluePrint The blueprint class to get the interceptor from
+ * @returns The receive interceptor function or identity function
+ */
 function getReceiveInterceptor(BluePrint: any): (model: any) => any {
   return (
     (BluePrint &&
@@ -92,6 +112,13 @@ function getReceiveInterceptor(BluePrint: any): (model: any) => any {
   );
 }
 
+/**
+ * @internal
+ * Casts a model according to a shape definition
+ * @param model The model to cast
+ * @param shape Object defining the shape to cast to
+ * @returns The cast model
+ */
 function castShape(
   model: any,
   shape?: Record<string, () => ClassConstructor<any>>
@@ -106,6 +133,16 @@ function castShape(
   return model;
 }
 
+/**
+ * @internal
+ * Casts a single model instance according to the provided callback and options
+ * @param callback Function or string that determines the cast target
+ * @param model The model to cast
+ * @param options Cast response options
+ * @param instance The class instance
+ * @param propertyKey The property key being processed
+ * @returns The cast model
+ */
 function castModel(
   callback: undefined | string | (() => ClassConstructor<any>),
   model: any,
@@ -154,6 +191,16 @@ function castModel(
   );
 }
 
+/**
+ * @internal
+ * Casts an array of models using the castModel function
+ * @param callback Function or string that determines the cast target
+ * @param models Array of models to cast
+ * @param options Cast response options
+ * @param instance The class instance
+ * @param propertyKey The property key being processed
+ * @returns Array of cast models
+ */
 function castCollection(
   callback: undefined | string | (() => ClassConstructor<any>),
   models: any[],
@@ -167,6 +214,12 @@ function castCollection(
 }
 
 // noinspection JSUnusedGlobalSymbols
+/**
+ * Decorator that automatically casts response data to specified model types
+ * @param callback Optional function or string that determines the cast target
+ * @param options Configuration options for casting response
+ * @returns Method decorator
+ */
 export function CastResponse(
   callback?: undefined | string | (() => ClassConstructor<any>),
   options: CastResponseContract = {
@@ -239,6 +292,19 @@ export function CastResponse(
   };
 }
 
+/**
+ * @internal
+ * Applies casting to models after unwrapping if necessary
+ * @param models The models to cast
+ * @param hasUnwrap Whether to unwrap the response
+ * @param unwrapProperties Array of properties to traverse for unwrapping
+ * @param unwrapProperty The complete unwrap property path
+ * @param instance The class instance
+ * @param callback Function or string that determines the cast target
+ * @param propertyKey The property key being processed
+ * @param options Cast response options
+ * @returns The cast model(s)
+ */
 function applyCasting(
   models: any,
   hasUnwrap: boolean,
@@ -272,6 +338,11 @@ function applyCasting(
 }
 
 // noinspection JSUnusedGlobalSymbols
+/**
+ * Class decorator that defines casting options for multiple response handlers
+ * @param options Record of casting options for different response handlers
+ * @returns Class decorator
+ */
 export function CastResponseContainer(
   options: Record<string, CastOptionContract>
 ): ClassDecorator {
