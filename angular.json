@@ -68,8 +68,11 @@
               "projects/cast-response-app/src/styles.css"
             ],
             "scripts": [],
-            "prerender": false,
-            "ssr": false
+            "prerender": true,
+            "ssr": {
+              "entry": "projects/cast-response-app/server.ts"
+            },
+            "server": "projects/cast-response-app/src/main.server.ts"
           },
           "configurations": {
             "production": {

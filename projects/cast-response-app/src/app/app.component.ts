@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { PostService } from './services/post.service';
 import { GeneralInterceptorContract } from 'cast-response';
+import { Post } from './models/post';
 
 @Component({
   selector: 'app-root',
@@ -9,18 +10,19 @@ import { GeneralInterceptorContract } from 'cast-response';
   standalone: true,
 })
 export class AppComponent implements OnInit {
+  posts = signal<Post[]>([]);
+
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
+    this.postService.load().subscribe((value) => {
+      this.posts.set(value);
+    });
     const value = this.postService.loadMethod();
     console.log('method', value);
 
     this.postService.loadPromise().then((value) => {
       console.log('Promise', value);
-    });
-
-    this.postService.load().subscribe((value) => {
-      console.log('Observable', value);
     });
 
     this.postService.loadAndCastObject().subscribe((value) => {

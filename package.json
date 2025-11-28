@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "version:patch": "npm version patch && cd projects/cast-response && npm version patch",
     "version:minor": "npm version minor && cd projects/cast-response && npm version minor",
-    "version:major": "npm version major && cd projects/cast-response && npm version major"
+    "version:major": "npm version major && cd projects/cast-response && npm version major",
+    "serve:ssr:cast-response-app": "node dist/cast-response-app/server/server.mjs"
   },
   "private": false,
   "dependencies": {
@@ -21,7 +22,10 @@
     "@angular/forms": "^18.2.14",
     "@angular/platform-browser": "^18.2.14",
     "@angular/platform-browser-dynamic": "^18.2.14",
+    "@angular/platform-server": "^18.2.14",
     "@angular/router": "^18.2.14",
+    "@angular/ssr": "^18.2.21",
+    "express": "^4.18.2",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -35,7 +39,9 @@
     "@angular-eslint/template-parser": "18.2.0",
     "@angular/cli": "~18.2.21",
     "@angular/compiler-cli": "^18.2.14",
+    "@types/express": "^4.17.17",
     "@types/jasmine": "~4.0.0",
+    "@types/node": "^18.18.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",

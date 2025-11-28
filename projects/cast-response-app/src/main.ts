@@ -1,13 +1,7 @@
-import { importProvidersFrom } from '@angular/core';
-import { AppComponent, GInterceptor } from './app/app.component';
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
-import { provideInterceptors } from 'cast-response';
+import { AppComponent } from './app/app.component';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
 
-bootstrapApplication(AppComponent, {
-  providers: [
-    importProvidersFrom(BrowserModule),
-    provideHttpClient(withFetch()),
-    provideInterceptors([GInterceptor]),
-  ],
-}).catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch((err) =>
+  console.error(err)
+);

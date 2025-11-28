@@ -10,6 +10,8 @@ import { isObject } from './helpers/is-object';
 import { identity, isObservable, map, Observable } from 'rxjs';
 import { CastOptionContract } from './contracts/cast-option-contract';
 import { isPromise } from 'rxjs/internal/util/isPromise';
+import { inject, Injectable, StateKey, TransferState } from '@angular/core';
+import { CastStateContract } from './contracts/cast-state-contract';
 
 /**
  * @internal
@@ -248,7 +250,7 @@ export function CastResponse(
       let hasUnwrap: boolean = false;
       let unwrapProperty = '';
       let unwrapProperties: string[] = [];
-      // check the container first if it has unwrap property
+      // check the container first if it has unwrapped property
       if (
         containerMap &&
         containerMap.has(propertyKey) &&
@@ -257,13 +259,13 @@ export function CastResponse(
         hasUnwrap = true;
         unwrapProperty = containerMap.get(propertyKey)!.unwrap!;
       }
-      // override hasUnwrap if the CastResponse itself has unwrap options,
+      // override hasUnwrap if the CastResponse itself has unwrapped options,
       // this is useful when you have multiple CastResponse with different unwrap options
       if (options.unwrap) {
         hasUnwrap = true;
         unwrapProperty = options.unwrap;
       }
-      // create array from unwrap property to use it later while reaching the model
+      // create an array from unwrapped property to use it later while reaching the model
       if (hasUnwrap) {
         unwrapProperties = unwrapProperty.split('.');
       }
@@ -358,4 +360,71 @@ export function CastResponseContainer(
     });
     return target;
   };
+}
+
+export class StateCaster {
+  static readonly map = new Map<StateKey<unknown>, CastStateContract>();
+  // noinspection JSUnusedGlobalSymbols
+  static registerStateCaster<T>(
+    stateKey: StateKey<T>,
+    castOptions: CastStateContract
+  ) {
+    StateCaster.map.set(stateKey, castOptions);
+  }
+
+  static hasStateCaster(key: StateKey<unknown>) {
+    return StateCaster.map.has(key);
+  }
+
+  static getStateCaster(
+    key: StateKey<unknown>
+  ): CastOptionContract | undefined {
+    return StateCaster.map.get(key);
+  }
+}
+
+function castStateFn<T>(models: T, caster: CastStateContract) {
+  if (Array.isArray(models)) {
+    return castCollection(
+      caster.model,
+      models,
+      caster as unknown as CastResponseContract,
+      undefined,
+      ''
+    );
+  } else {
+    return castModel(
+      caster.model,
+      models,
+      caster as unknown as CastResponseContract,
+      undefined,
+      ''
+    );
+  }
+}
+
+@Injectable({ providedIn: 'root' })
+export class CastTransferState {
+  transferState: TransferState = inject(TransferState);
+  set<T>(key: StateKey<T>, value: T): void {
+    this.transferState.set(key, value);
+  }
+  get<T>(key: StateKey<T>, defaultValue: T): T {
+    const state = this.transferState.get<T>(key, defaultValue);
+    if (StateCaster.hasStateCaster(key)) {
+      const caster = StateCaster.getStateCaster(key)!;
+      return castStateFn(state, caster);
+    }
+    return state;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  hasKey<T>(key: StateKey<T>): boolean {
+    return this.transferState.hasKey(key);
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  get isEmpty(): boolean {
+    return this.transferState.isEmpty;
+  }
 }

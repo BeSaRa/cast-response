@@ -8,12 +8,10 @@ class Inter implements InterceptorContract<Post> {
   }
 
   receive(model: Post): Post {
-    console.log('MODEL', model);
     return model;
   }
 }
 const receive: ReceiveInterceptorFn<Post> = (model) => {
-  console.log('Receive From Function', model);
   return model;
 };
 @InterceptModel({
@@ -23,10 +21,10 @@ const receive: ReceiveInterceptorFn<Post> = (model) => {
 export class Post {
   userId!: number;
   id!: number;
-  title!: string;
-  body!: string;
+  name!: string;
+  username!: string;
 
-  constructor(welcome: string) {
-    console.log(welcome);
+  get nameWithUsername() {
+    return `${this.username} - ${this.name}`;
   }
 }
